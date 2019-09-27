@@ -1,0 +1,148 @@
+This type of neural network applies different filters to images using kernels of different sizes.
+Once we extract some more general information on the image, we use pooling (extracting the highest value out of a kernel
+zone) to further reduce the data that we will look over to describe a certain image in detail.
+
+The CNN will extend an image's 3rd dimension from the different filters that have been applied on the image to describe
+it. See TensorflowQuickDraw.py
+
+So CNN is placing your kernel on image, taking your values... then, you do pooling: you take the biggest values in a certain kernel part to give you a submatrix,... and then you continue until at the end you flatten out your matrix to 1D. Then you do the activation by doing the cross product of your 1D matrix. For test values, classify directly what is supposed to be the result.
+Load the dataset with keras.
+Then, do your own algorithms.
+
+So I will end up with a 1D matrix. These will be my values for the "create_dataset" step. Now for each of those 1D matrix I will have to extract a value. I will place the targets besides those.
+
+I only saw linear classifiers, so I thought: how can I do it to separate multiple variables? Then I found this for SVMs: https://fr.wikipedia.org/wiki/Machine_%C3%A0_vecteurs_de_support and look into "Cas multi classe". Essentially, I create linear relationships for all elements "one versus all". So it trains many many weights. Create a linear relationship for a, another for b, another for c, ...
+
+
+Other notes: look below
+http://scs.ryerson.ca/~aharley/vis/conv/
+
+So what I learned from this is that after getting the input image, he does the tanh function on multiple pixels at the
+same time and it gives him a single value, which is the tanh response.
+
+He gets his weighted input by doing (sum of (xij) * weight ) for each pixel concerned and then applying the tanh function
+on top of that.
+
+So essentially that is how you transform a 28x28 matrix into a 1x... matrix: by doing the tanh function from the
+(sum of (xij) * weight) of multiple pixels coming from multiple different images.
+
+A typical layer of a convolutional network consists of three stages (see ﬁgure 9.7).
+In the ﬁrst stage, the layer performs several convolutions in parallel to produce a
+set of linear activations. In the second stage, each linear activation is run through
+a nonlinear activation function, such as the rectiﬁed linear activation function.
+This stage is sometimes called the
+detector stage
+. In the third stage, we use a
+pooling function to modify the output of the layer further.
+http://www.deeplearningbook.org/contents/convnets.html
+
+So the object Convolution2D in keras is simply a phase of passing a kernel on an 2D image.
+
+Rectifier linear unit (ReLU) is more frequently used as one of the possible ways to overcome the numerical problems
+related to the sigmoids. In other words, avoid all negative values (that is all that ReLU does: it removes negative values)
+
+I went on Wikipedia looking at CNNs and I found out that the fully connected layer goes back to the traditional
+multi-layer perceptron neural network (MLP), which is applying an activation function to the received data. I believe
+that from here on it is very similar to supervised learning.
+
+But now, my question is: How do I pass a 1D matrix of features to my machine learning model?
+I found out that, using supervised learning, there is something called dictionary learning. This looks for sparse data
+to determine how to classify the feature (sparse = values of 0).
+There is also the possibility of using unsupervised learning. Using the K-means clustering algorithm or principal component
+analysis, as well as local linear embedding, independent component analysis, and unsupervised dictionary learning.
+https://en.wikipedia.org/wiki/Feature_learning
+
+I just found out on that same wiki page that it was also mentioning that for neural networks the most used approach is
+the Siamese neural network. This approach compares the different feature vectors, using a feature vector as a baseline
+to know whether the input is a certain number.
+
+Here is my bet on how it works:
+Every classificator has its own vector of weights. There are L weights, which is the length of the feature vector
+extracted from the different kernels. Each classificator (0,1,2,3,4,5,6,7,8,9 in digits) has its own set of weights.
+The classificator that has the greatest score wins. (THIS IS RIGHT!) Or...
+There is a single set of weights for all the classificators. Idk which is right... (NOT THIS ONE)
+Or...
+You create a feature vector for each classificator. Then, as you take in other feature vectors, you make them look more
+like yours by averaging the values you currently have with that of the new input. When comes time to test, you compute
+the square distance. The classificator having the lowest Euclidean distance wins. (UNSURE)
+
+So this guy used the idea that every classificator has its own vector of weights:
+http://scs.ryerson.ca/~aharley/vis/conv/
+If you see the last vector, you will notice that there are different colors relating the top layer with the next layer as
+you move your cursor on the different numbers.
+Also, he does the tanh function every time he is about to do a convolution layer.
+Also, he has two pooling layers and two convolution layers. His second convolution layer takes four of his max pooling
+arrays to give an output.
+
+So the number of weights you need in a CNN is the number of edges you see relating your neurons... which means that all
+the values in my kernels are normally weights that are getting modified later on. "The CONV layer’s parameters consist
+of a set of learnable filters." -http://cs231n.github.io/convolutional-networks/
+Also, the fully connected layer has 1 weight per value received as input. AND it has all those weights per element in
+the classification!
+http://cs231n.github.io/convolutional-networks/
+https://datascience.stackexchange.com/questions/25754/updating-the-weights-of-the-filters-in-a-cnn
+
+I just realized that the second convolutional layer from the simulation on the scs.ryerson.ca link has one filter per
+matrix image it is taking in. Also, these kernels are different from the ones in the first convolutional layer.
+
+A kernel is a neuron.
+
+From http://cs231n.github.io/convolutional-networks/:
+CONVOLUTION OPERATION BACKPROPAGATION
+Backpropagation. The backward pass for a convolution operation (for both the data and the weights) is also a convolution
+(but with spatially-flipped filters). This is easy to derive in the 1-dimensional case with a toy example (not expanded
+on for now).
+POOLING OPERATION BACKPROPAGATION
+Backpropagation. Recall from the backpropagation chapter that the backward pass for a max(x, y) operation has a simple
+interpretation as only routing the gradient to the input that had the highest value in the forward pass. Hence, during
+the forward pass of a pooling layer it is common to keep track of the index of the max activation (sometimes also called
+the switches) so that gradient routing is efficient during backpropagation.
+(so essentially, keep track of the indexes with max values to make gradient routing(?) faster)
+Essentially, we use the derivative to go "back in time", and modify our inputs until we have a value that works!
+
+Backpropagation lecture
+http://cs231n.github.io/optimization-2/
+
+SVM Loss function
+Use the 1 against 1 approach to learn to which digit the image belongs to. I believe it will be simpler, because you
+have an example doing just that (separating healthy from unhealthy folks).
+
+What should I expect as a target from the feature_vector? I need that to be able to rectify my weights...
+Well, the gradient of a vector is a tensor, which means its not a scalar, so... ?
+
+y = f(x), where both are tensors. y = 1x10 matrix, one for each digit, and f(x) is my whole feature vector.
+http://www.robots.ox.ac.uk/~vgg/practicals/cnn/#part-2-back-propagation-and-derivatives
+It seems like he is getting somewhere... that I am not getting to yet.
+
+So I had an idea. It is probably not the conventional method, but still. I think it is the Siamese neural network operation I
+just understood. If you have a vector f, and that some values of that vector are very high and others are very low, then
+you can modify your weights based on these values. I could say my range for the weights is [1,10], where a usual value
+of 1 from the input (highest value is 1, because of activation and normalization) makes the weight equal to ten.
+A usual value of 0 from the input would mean that the weight would be 1. However, I do not think this is translation or
+rotation proof.
+
+Siamese neural network
+It has the loss function of Triplet loss.
+
+So this link https://machinelearningmastery.com/how-to-choose-loss-functions-when-training-deep-learning-neural-networks/
+tells me that deep learning neural networks are trained using the stochastic gradient descent optimization algorithm.
+
+I think I know how it all works!!!
+It is just that there are so many dimensions I thought about it, but I also thought it would not be feasible.
+Think about it - overall, your flattened matrix with all those weights can be a function. It is just that you will be
+playing with some 176 dimensional space XD.
+However, one thing to consider is that I would have to, on top of the weights, design linear functions that separate
+each digit. The weights will help me reduce the number of outliers because I will be able to manipulate the results based
+on the weights I put for each.
+HERE IS THE WEBSITE THAT SOLVES IT ALL :D : https://victorzhou.com/blog/intro-to-cnns-part-2/
+Hope its not going down any time soon... just in case, I will copy all hahah :D in file called "victorZhousPageWebsite"
+
+In CNN, higher the complexity, higher the accuracy. - https://www.skcript.com/svr/writing-cnn-from-scratch/
+
+In Victor's web page...
+outs​(c) --> this is the softmax function.
+When he uses the chain rule to derive, he is only putting two softmax equations together, and deriving them. One is
+for tk, and the other is for tc. One derives for S, the other derives for tk.
+The derivative of e^x is e^x.
+Now the derivative of the first part is -e^x * S^(-2), because we are deriving for S, and also because the derivative
+for 1/x is -1/(x^2) --> if you replace S by x you will see

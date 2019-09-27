@@ -1,0 +1,4 @@
+Go to File > Settings > Project Interpreter. Click on the + icon that you see
+from this view. Search for the library you want to add. If you do not find it,
+then you need to use virtual environment to put it in the venv folder of your
+project.

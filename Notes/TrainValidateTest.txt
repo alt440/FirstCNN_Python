@@ -1,0 +1,8 @@
+# ML types of games: train test, validation test, and "test test"
+# train test: normal thing. You train your model to recognize some features on some images.
+# validation test: a subset of the data set taken out to evaluate if your model is not overlearning your images, or, in
+# the common term, overfitting itself. The validation test is important to know if your model has learned a generalized
+# version of the images or if it has learned the images by heart pixel by pixel (which we do not want, otherwise the
+# matching with new images will likely not occur)
+# "test test": some images not related to the training sample used to determine if our model is good enough with
+# unrelated images to recognize some features.

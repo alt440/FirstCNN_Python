@@ -1,0 +1,13 @@
+sudo apt-get install python3-venv
+# create your virtual environment. Must be at the precise destination of your
+# python files
+python3 -m venv ~/PycharmProjects/MGCTest
+# then ou have to activate your virtual environment. Source path followed by
+# /bin/activate
+source ~/PycharmProjects/MGCTest/bin/activate
+# then install your packages with pip
+pip3 install ...
+# the deactivate your virtual environment
+deactivate
+
+https://docs.python.org/3/tutorial/venv.html

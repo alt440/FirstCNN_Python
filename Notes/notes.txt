@@ -1,0 +1,5 @@
+Difference between tf.Variable and tf.placeholder
+- tf.Variable usually holds the value of your weights and bias.
+- tf.placeholder is a variable that will hold a value at a later time (for example some training image that you are going
+to feed it as you are training your model)
+

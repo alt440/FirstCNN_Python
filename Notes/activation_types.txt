@@ -1,0 +1,18 @@
+Types of activations
+
+Linear - Default for no activation (has value between -infinity, +infinity) Not useful for ML which requires separation
+by something more complex than a simple line. That's why we use Relu instead of Linear in the outer nodes.
+
+Tanh - There is only a small difference between sigmoid and tanh. Tanh has a very abrupt gradient, which can lead to
+massive change in the data set results if some new data were to be added.
+
+Sigmoid - Determines the probability of some event (gives value between 0 and 1. see supervised learning github). Because
+the gradient of this function is small, then our data set might not change a lot when we are going to change some weights.
+
+Softmax - Determines the probability of some event from multiple nodes coming in - and gives as multiple outputs some
+values that sum up to 1 (always). Sigmoid does have values between 0 and 1, but multiple nodes of sigmoid will probably
+sum up to more than 1, which is unrealistic if we are talking about probabilities.
+
+Relu - linear when the value is superior to 0, and is flat at y=0 when the value is inferior to 0.
+
+Test your stuff on the web using the tensorflow simulator.
